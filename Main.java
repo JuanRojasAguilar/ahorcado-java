@@ -1,12 +1,15 @@
 import java.text.MessageFormat;
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.ArrayList;
 import java.util.Random;
+import java.util.TreeSet;
+import java.util.SortedSet;
 
 public class Main {
   protected static Scanner userInput = new Scanner(System.in);
   protected static byte seleccion;
+  private static SortedSet<String> sortedWord = new TreeSet<String>();
+  private static SortedSet<String> sortedGuesses = new TreeSet<String>();
 
   public static void main(String[] args) {
     Juego.iniciar();
@@ -58,40 +61,56 @@ public class Main {
 
       }
     }
-
-    private static void imprimirPantalla(ArrayList<String> guess, String palabraMagica) {
+    private static void imprimirPantalla(SortedSet<String> guess, String palabraMagica) {
       limpiarPantalla();
-      ArrayList<String> adivinadas = new ArrayList<String>();
       String intento;
       System.out.println("Adivina de una letra o la palabra!");
       for (int i = 0; i < palabraMagica.length(); i++) {
-        for (int j = 0; j < adivinadas.size(); j++) {
-          if (palabraMagica.charAt(i) == adivinadas.get(j).charAt(0)) {
-            System.out.print(palabraMagica.charAt(i));
+        sortedWord.add(String.valueOf(palabraMagica.charAt(i)));
+        boolean found = false;
+        for (int j = 0; j < sortedGuesses.size(); j++) {
+          if (sortedGuesses.contains(String.valueOf(palabraMagica.charAt(i)))) {
+            found = true;
           }
         }
-        System.out.print('_');
+        if (found == true) {
+            System.out.print(palabraMagica.charAt(i));
+            found = false;
+        } else {
+            System.out.print('_');
+        }
       }
       System.out.println();
       System.out.print(">>");
       intento = userInput.nextLine();
-
+        
+      if (intento == "") {
+        imprimirPantalla(sortedGuesses, palabraMagica);
+      }
       if (intento.length() > 1) {
         if (intento == palabraMagica) {
-          System.out.println("Lo lograste!!!");
-          esperar();
-          isDone = true;
+          ganar();
         }
       } else {
         if (palabraMagica.contains(intento)) {
           System.out.println(palabraMagica.indexOf(intento));
-          adivinadas.add(intento);
+          sortedGuesses.add(intento);
+          System.out.println(sortedGuesses);
+          if (sortedGuesses.equals(sortedWord)) {
+            ganar();
+          }
           esperar();
         }
       }
 
-      imprimirPantalla(adivinadas, palabraMagica);
+      imprimirPantalla(sortedGuesses, palabraMagica);
 
+    }
+    static void ganar() {
+        limpiarPantalla();
+        System.out.println("Has superado el desafio!!!");
+        esperar();
+        salir();
     }
 
     static void limpiarPantalla() {

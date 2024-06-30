@@ -89,15 +89,14 @@ public class Main {
       }
       if (intento.length() > 1) {
         if (intento == palabraMagica) {
-          ganar();
+          ganar(palabraMagica);
         }
       } else {
         if (palabraMagica.contains(intento)) {
           System.out.println(palabraMagica.indexOf(intento));
           sortedGuesses.add(intento);
-          System.out.println(sortedGuesses);
           if (sortedGuesses.equals(sortedWord)) {
-            ganar();
+            ganar(palabraMagica);
           }
           esperar();
         }
@@ -106,8 +105,9 @@ public class Main {
       imprimirPantalla(sortedGuesses, palabraMagica);
 
     }
-    static void ganar() {
+    static void ganar(String word) {
         limpiarPantalla();
+        System.out.println("La palabra era: " + word);
         System.out.println("Has superado el desafio!!!");
         esperar();
         salir();
